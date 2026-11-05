@@ -37,6 +37,22 @@
     button, input, select, textarea { font: inherit; }
     button { cursor: pointer; }
     .app-shell { min-height: 100vh; }
+    [hidden] { display: none !important; }
+    .login-screen { position: fixed; z-index: 100; inset: 0; min-height: 100vh; padding: 24px; display: grid; place-items: center; overflow-y: auto; background: radial-gradient(circle at 15% 15%, #e6f2ec 0, transparent 38%), var(--canvas); }
+    .login-card { width: min(420px, 100%); padding: 34px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); box-shadow: var(--shadow); }
+    .login-brand { display: flex; align-items: center; gap: 11px; margin-bottom: 30px; }
+    .login-brand-copy { color: var(--forest); font-size: 19px; font-weight: 700; }
+    .login-brand-copy small { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; font-weight: 500; letter-spacing: .06em; }
+    .login-title { margin: 0; font-size: 21px; font-weight: 600; }
+    .login-description { margin: 7px 0 23px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .login-field { margin-top: 13px; }
+    .login-label { margin-bottom: 6px; display: block; color: #4b5a56; font-size: 10px; font-weight: 600; }
+    .login-input { width: 100%; height: 42px; padding: 0 11px; border: 1px solid #d8e1dd; border-radius: 5px; outline: none; color: #2f3d39; background: #fff; font-size: 12px; }
+    .login-input:focus { border-color: #82aa9c; box-shadow: 0 0 0 2px rgba(36,100,84,.08); }
+    .login-submit { width: 100%; min-height: 42px; margin-top: 19px; }
+    .login-error { min-height: 17px; margin-top: 9px; color: var(--red); font-size: 10px; }
+    .login-demo-note { margin-top: 17px; padding: 10px 11px; border-radius: 5px; color: #76591f; background: #fff7e8; font-size: 9px; line-height: 1.6; }
+    .login-demo-note strong { font-weight: 600; }
     .sidebar {
       position: fixed; z-index: 20; inset: 0 auto 0 0; width: 244px; padding: 24px 15px 18px;
       display: flex; flex-direction: column; color: #edf5f1; background: var(--forest);
@@ -202,7 +218,6 @@
     .ai-box-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .ai-label { display: flex; align-items: center; gap: 6px; color: #376454; font-size: 10px; font-weight: 600; }
     .ai-label svg { width: 14px; height: 14px; }
-    .ai-demo { color: #8a7750; font-size: 8px; }
     .ai-action { min-height: 29px; padding: 0 9px; display: inline-flex; align-items: center; gap: 5px; border: 1px solid #c8ded3; border-radius: 4px; color: #31604f; background: white; font-size: 9px; font-weight: 600; }
     .ai-action svg { width: 13px; height: 13px; }
     .ai-result { min-height: 31px; margin-top: 8px; color: #71817a; font-size: 9px; line-height: 1.6; }
@@ -332,6 +347,8 @@
       .dialog-foot .primary-button, .plain-button { min-height: 35px; padding: 0 9px; }
       .toast { right: 10px; bottom: 70px; }
       .demo-chip { margin-left: 4px; font-size: 8px; }
+      .login-screen { padding: 16px; }
+      .login-card { padding: 25px 21px; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
@@ -339,7 +356,34 @@
   </style>
 </head>
 <body>
-  <div class="app-shell">
+  <main class="login-screen" id="login-screen">
+    <section class="login-card" aria-labelledby="login-title">
+      <div class="login-brand">
+        <span class="brand-mark"><i data-lucide="scan-eye"></i></span>
+        <span class="login-brand-copy">살피소<small>DAEGU FIELD SERVICE</small></span>
+      </div>
+      <h1 class="login-title" id="login-title">로그인</h1>
+      <p class="login-description">시연 계정과 Gemini API 키를 입력해 현장 업무 화면을 이용하세요.</p>
+      <form id="login-form">
+        <div class="login-field">
+          <label class="login-label" for="login-email">이메일</label>
+          <input class="login-input" id="login-email" type="email" autocomplete="username" value="bhj0429@korea.kr" required>
+        </div>
+        <div class="login-field">
+          <label class="login-label" for="login-password">비밀번호</label>
+          <input class="login-input" id="login-password" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="login-field">
+          <label class="login-label" for="login-gemini-key">Gemini API 키 <span style="color:#87938f;font-weight:400">(시연용)</span></label>
+          <input class="login-input" id="login-gemini-key" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Vercel 환경변수 사용 시 비워 두세요">
+        </div>
+        <button class="primary-button login-submit" type="submit"><i data-lucide="log-in"></i>로그인</button>
+        <div class="login-error" id="login-error" role="alert" aria-live="polite"></div>
+      </form>
+      <div class="login-demo-note"><strong>임시 시연 계정</strong><br>로컬 실행 시 입력한 키로 브라우저에서 Gemini를 직접 호출합니다. 키가 브라우저에 노출되므로 사용량 제한을 설정한 시연용 키만 사용하세요. Vercel에서는 환경변수 사용을 권장합니다.</div>
+    </section>
+  </main>
+  <div class="app-shell" id="app-shell" hidden>
     <aside class="sidebar" aria-label="주 메뉴">
       <a class="brand" href="#home" aria-label="살피소 현장업무 홈">
         <span class="brand-mark"><i data-lucide="scan-eye"></i></span>
@@ -363,9 +407,9 @@
           <p class="help-copy">신고 유형이나 담당부서가 궁금하신가요?<br>시스템 운영 담당자에게 문의해 주세요.</p>
         </div>
         <div class="sidebar-user">
-          <div class="avatar">김</div>
-          <div class="user-copy"><div class="user-name">김민수 주무관</div><div class="user-dept">현장지원과 · 사용자 예시</div></div>
-          <button class="icon-button" style="margin-left:auto;color:#d3e2dc" aria-label="사용자 메뉴"><i data-lucide="ellipsis"></i></button>
+          <div class="avatar" id="sidebar-avatar">B</div>
+          <div class="user-copy"><div class="user-name" id="sidebar-account">bhj0429@korea.kr</div><div class="user-dept">임시 계정 · 시연용</div></div>
+          <button class="icon-button" data-action="logout" style="margin-left:auto;color:#d3e2dc" aria-label="로그아웃" title="로그아웃"><i data-lucide="log-out"></i></button>
         </div>
       </div>
     </aside>
@@ -376,14 +420,15 @@
         <div class="top-actions">
           <span class="date-label" id="today-label"></span>
           <button class="icon-button" id="notification-button" aria-label="알림"><i data-lucide="bell"></i><span class="notification-dot"></span></button>
-          <div class="avatar" style="width:29px;height:29px;font-size:10px">김</div>
+          <div class="avatar" id="top-avatar" style="width:29px;height:29px;font-size:10px">B</div>
+          <button class="icon-button" data-action="logout" aria-label="로그아웃" title="로그아웃"><i data-lucide="log-out"></i></button>
         </div>
       </header>
       <main class="content">
         <section class="welcome-row">
           <div>
             <div class="eyebrow">DAEGU · FIELD OPERATIONS</div>
-            <h1 id="welcome-title">안녕하세요, 김민수 주무관님<span class="demo-chip">화면 시연</span></h1>
+            <h1><span id="welcome-name">안녕하세요, 사용자님</span><span class="demo-chip">임시 계정 · 시연</span></h1>
             <p class="welcome-copy">현장 신고와 부서 처리 현황을 한곳에서 확인할 수 있습니다.</p>
           </div>
           <button class="primary-button report-cta" data-action="new-report"><i data-lucide="plus"></i>신고 등록</button>
@@ -447,19 +492,19 @@
             </div>
           </section>
         </div>
-        <div class="footer-note">신고와 사진은 Vercel·Supabase 환경변수 설정 후 저장됩니다. 인증 및 실제 행정 업무시스템 연계는 아직 적용되지 않은 테스트 화면입니다.</div>
+        <div class="footer-note">시연 모드입니다. Gemini 분석을 위해 사진이 Google Gemini로 전송되며, 신고 내용은 이 브라우저 세션에만 임시 보관되고 사진 파일은 저장하지 않습니다. 로그인은 API를 보호하지 않습니다.</div>
       </main>
     </div>
   </div>
 
-  <nav class="mobile-nav" aria-label="모바일 메뉴">
+  <nav class="mobile-nav" aria-label="모바일 메뉴" hidden>
     <button class="active" data-view="home"><i data-lucide="layout-dashboard"></i><span>현황판</span></button>
     <button data-action="new-report"><i data-lucide="circle-plus"></i><span>신고 등록</span></button>
     <button data-view="mine"><i data-lucide="clipboard-list"></i><span>나의 신고</span></button>
     <button data-view="department"><i data-lucide="inbox"></i><span>부서 업무함</span></button>
   </nav>
 
-  <div class="modal-backdrop" id="report-modal" role="presentation">
+  <div class="modal-backdrop" id="report-modal" role="presentation" hidden>
     <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="report-dialog-title">
       <div class="dialog-head">
         <div class="dialog-heading"><div class="metric-icon"><i data-lucide="file-plus-2"></i></div><div><div class="dialog-title" id="report-dialog-title">현장 신고 등록</div><div class="dialog-kicker">사진과 위치를 확인하고 신고 내용을 작성해 주세요</div></div></div>
@@ -473,8 +518,8 @@
               <label class="upload-zone" for="photo-input"><span class="upload-icon"><i data-lucide="camera"></i></span><span><span class="upload-title">사진 촬영 또는 파일 선택</span><span class="upload-help">모바일은 카메라를 바로 열 수 있습니다<br>JPG, PNG, WebP · 최대 4장, 저장 전 자동 압축</span></span><input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple></label>
               <div class="photo-preview" id="photo-preview"></div>
               <div class="ai-box">
-                <div class="ai-box-head"><div><div class="ai-label"><i data-lucide="scan-search"></i>AI 내용 분석 <span class="ai-demo">Gemini API</span></div></div><button type="button" class="ai-action" id="analyze-button"><i data-lucide="sparkles"></i>사진 분석</button></div>
-                <div class="ai-result" id="ai-result">사진을 분석해 신고 유형과 설명 초안을 제안합니다. 결과를 확인하고 수정한 뒤 제출해 주세요.</div>
+                <div class="ai-box-head"><div><div class="ai-label"><i data-lucide="scan-search"></i>AI 내용 분석</div></div><button type="button" class="ai-action" id="analyze-button"><i data-lucide="sparkles"></i>사진 분석</button></div>
+                <div class="ai-result" id="ai-result" aria-live="polite">사진을 추가한 뒤 분석을 누르면 Gemini가 신고 유형과 내용 초안을 작성합니다.</div>
               </div>
               <div class="field-row">
                 <div class="field"><label class="field-label" for="category-input">신고 유형 <span class="required">필수</span></label><select class="control" id="category-input" required><option value="">유형 선택</option><option>불법현수막</option><option>도로 파손</option><option>안전봉 파손</option><option>보도블록 파손</option><option>가로등 고장</option><option>기타 시설물</option></select></div>
@@ -505,18 +550,23 @@
     </section>
   </div>
 
-  <div class="modal-backdrop" id="detail-modal" role="presentation">
+  <div class="modal-backdrop" id="detail-modal" role="presentation" hidden>
     <section class="dialog detail-dialog" role="dialog" aria-modal="true" aria-labelledby="detail-title">
       <div class="dialog-head"><div><div class="dialog-title">신고 상세</div><div class="dialog-kicker" id="detail-id"></div></div><button class="icon-button" data-close="detail-modal" aria-label="상세 창 닫기"><i data-lucide="x"></i></button></div>
       <div class="detail-content" id="detail-content"></div>
       <div class="dialog-foot" style="justify-content:flex-end"><button class="plain-button" data-close="detail-modal">닫기</button></div>
     </section>
   </div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="./kakao-config.js"></script>
   <script>
     const KAKAO_MAP_APP_KEY = window.SALPISO_CONFIG?.kakaoMapAppKey || "";
+    const DEMO_ACCOUNT = Object.freeze({ email: "bhj0429@korea.kr", password: "SalpisoDemo!2026" });
+    const DEMO_SESSION_KEY = "salpiso-demo-session";
+    const GEMINI_SESSION_KEY = "salpiso-demo-gemini-key";
+    const DEMO_REPORTS_KEY = "salpiso-demo-reports";
+    const DEMO_MODE = true;
     const DAegu_CENTER = { lat: 35.8714, lng: 128.6014 };
     const sampleReports = [
       { id: "SP-2026-1048", type: "불법현수막", title: "교차로 인근 불법현수막", area: "중구 동성로", address: "대구 중구 동성로2길", dept: "도시디자인과 도시환경개선팀", status: "waiting", statusLabel: "배부 대기", time: "오늘 10:42", icon: "flag-triangle-right", tint: "amber", lat: 35.8698, lng: 128.5968, description: "교차로 시야를 가리는 현수막이 설치되어 있습니다.", routingReason: "옥외광고물 관리 및 정비 업무로 자동 배부" },
@@ -538,8 +588,43 @@
     let reportMarker = null;
     let kakaoReady = false;
     let toastTimer;
+    let workspaceInitialized = false;
 
     function iconRefresh() { if (window.lucide) window.lucide.createIcons(); }
+    function setWorkspaceVisible(visible) {
+      document.getElementById("app-shell").hidden = !visible;
+      document.querySelector(".mobile-nav").hidden = !visible;
+      document.querySelectorAll(".modal-backdrop").forEach(modal => { modal.hidden = !visible; });
+      document.getElementById("toast").hidden = !visible;
+    }
+    function showWorkspace(email) {
+      const accountName = email.split("@")[0];
+      document.getElementById("login-screen").hidden = true;
+      setWorkspaceVisible(true);
+      document.getElementById("sidebar-account").textContent = email;
+      document.getElementById("sidebar-avatar").textContent = accountName.charAt(0).toUpperCase();
+      document.getElementById("top-avatar").textContent = accountName.charAt(0).toUpperCase();
+      document.getElementById("welcome-name").textContent = `안녕하세요, ${accountName}님`;
+      if (workspaceInitialized) return;
+      workspaceInitialized = true;
+      setToday();
+      renderReports();
+      loadSavedReports();
+      loadKakaoMaps();
+      iconRefresh();
+    }
+    function endDemoSession() {
+      sessionStorage.removeItem(DEMO_SESSION_KEY);
+      sessionStorage.removeItem(GEMINI_SESSION_KEY);
+      document.querySelectorAll(".modal-backdrop.open").forEach(modal => modal.classList.remove("open"));
+      document.body.style.overflow = "";
+      setWorkspaceVisible(false);
+      document.getElementById("login-screen").hidden = false;
+      document.getElementById("login-password").value = "";
+      document.getElementById("login-gemini-key").value = "";
+      document.getElementById("login-error").textContent = "";
+      document.getElementById("login-email").focus();
+    }
     function showToast(message) {
       const toast = document.getElementById("toast");
       toast.textContent = message;
@@ -589,6 +674,21 @@
       };
     }
     async function loadSavedReports() {
+      if (DEMO_MODE) {
+        try {
+          const savedReports = JSON.parse(sessionStorage.getItem(DEMO_REPORTS_KEY) || "[]");
+          if (!Array.isArray(savedReports)) throw new Error("Invalid demo report data");
+          reports = [...savedReports, ...sampleReports];
+        } catch {
+          reports = [...sampleReports];
+          showToast("임시 신고 내역을 불러오지 못했습니다. 시연 예시를 표시합니다.");
+        }
+        persistenceState = "demo";
+        updateQueueSubtitle();
+        renderReports();
+        return;
+      }
+
       try {
         const response = await fetch("/api/reports", { headers: { Accept: "application/json" }, cache: "no-store" });
         if (!response.ok) throw new Error("API unavailable");
@@ -779,6 +879,7 @@
     document.querySelectorAll(".filter-tab").forEach(button => button.addEventListener("click", () => setFilter(button.dataset.filter)));
     document.getElementById("report-search").addEventListener("input", renderReports);
     document.getElementById("notification-button").addEventListener("click", () => showToast("새 알림 2건: 배부 대기 신고를 확인해 주세요."));
+    document.querySelectorAll("[data-action='logout']").forEach(button => button.addEventListener("click", endDemoSession));
     document.addEventListener("keydown", event => { if (event.key === "Escape") document.querySelectorAll(".modal-backdrop.open").forEach(modal => closeModal(modal.id)); });
 
     document.getElementById("photo-input").addEventListener("change", event => {
@@ -786,6 +887,9 @@
       if (chosenFiles.length > 4) showToast("사진은 최대 4장까지 첨부할 수 있습니다.");
       const files = chosenFiles.slice(0, 4);
       selectedPhotos = files;
+      const result = document.getElementById("ai-result");
+      result.textContent = "사진을 추가한 뒤 분석을 누르면 Gemini가 신고 유형과 내용 초안을 작성합니다.";
+      result.classList.remove("ready");
       document.getElementById("photo-preview").innerHTML = files.map((file, index) => `<div class="photo-thumb"><img src="${URL.createObjectURL(file)}" alt="첨부 사진 ${index + 1}"><button class="photo-remove" type="button" data-photo-index="${index}" aria-label="사진 삭제"><i data-lucide="x"></i></button></div>`).join("");
       document.querySelectorAll("[data-photo-index]").forEach(button => button.addEventListener("click", () => {
         selectedPhotos.splice(Number(button.dataset.photoIndex), 1);
@@ -797,13 +901,13 @@
       iconRefresh();
     });
     document.getElementById("analyze-button").addEventListener("click", async event => {
-      const button = event.currentTarget;
       const result = document.getElementById("ai-result");
       if (!selectedPhotos.length) { showToast("먼저 현장 사진을 추가해 주세요."); return; }
+      const button = event.currentTarget;
       const originalLabel = button.innerHTML;
       button.disabled = true;
       button.innerHTML = '<i data-lucide="loader-circle"></i>분석 중';
-      result.textContent = "사진을 Gemini로 보내 신고 초안을 분석하고 있습니다.";
+      result.textContent = "Gemini가 사진 속 시설물과 상태를 분석하고 있습니다.";
       result.classList.remove("ready");
       iconRefresh();
       try {
@@ -811,28 +915,97 @@
         if (photos.reduce((total, dataUrl) => total + dataUrl.length, 0) > 3_000_000) {
           throw new Error("압축 후 사진 용량이 큽니다. 사진 수를 줄이거나 다시 촬영해 주세요.");
         }
-        const response = await fetch("/api/analyze", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ photos: photos.map(dataUrl => ({ dataUrl })) }),
-        });
-        const draft = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(draft.error || "사진 분석에 실패했습니다.");
-
-        const categoryInput = document.getElementById("category-input");
-        const allowedCategories = Array.from(categoryInput.options).map(option => option.value).filter(Boolean);
-        if (!allowedCategories.includes(draft.category) || typeof draft.description !== "string" || !draft.description.trim()) {
+        const apiKey = sessionStorage.getItem(GEMINI_SESSION_KEY) || "";
+        const isLocalPage = location.protocol === "file:" || ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
+        let response;
+        let draft;
+        if (isLocalPage) {
+          if (!apiKey) throw new Error("로컬 시연에서는 로그인 화면에 Gemini API 키를 입력해 주세요.");
+          const parts = [
+            {
+              text: [
+                "당신은 한국 지방자치단체의 현장 신고 작성을 돕습니다.",
+                "첨부된 사진에서 직접 확인할 수 있는 시설물과 상태만 근거로 신고 초안을 작성하세요.",
+                "사진만으로 불법 여부, 원인, 피해 규모, 위치 또는 안전 위험을 단정하지 말고, 보이지 않는 정보는 만들어내지 마세요.",
+                "category는 다음 중 하나만 선택하세요: 불법현수막, 도로 파손, 안전봉 파손, 보도블록 파손, 가로등 고장, 기타 시설물.",
+                document.getElementById("category-input").value ? `사용자가 선택한 신고 유형은 '${document.getElementById("category-input").value}'입니다. 사진과 명백히 다르지 않으면 유지하세요.` : "",
+                "description은 확인된 상태와 필요한 확인 사항을 한국어 한두 문장으로 작성하세요.",
+                "JSON 형식으로 category와 description만 반환하세요.",
+              ].filter(Boolean).join("\n"),
+            },
+            ...photos.map(dataUrl => {
+              const match = dataUrl.match(/^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/);
+              if (!match) throw new Error("사진 형식을 확인할 수 없습니다. JPG, PNG 또는 WebP 사진을 사용해 주세요.");
+              return { inlineData: { mimeType: match[1], data: match[2] } };
+            }),
+          ];
+          let geminiResponse;
+          try {
+            geminiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+              body: JSON.stringify({
+                contents: [{ role: "user", parts }],
+                generationConfig: {
+                  responseMimeType: "application/json",
+                  responseSchema: {
+                    type: "OBJECT",
+                    properties: {
+                      category: { type: "STRING", enum: ["불법현수막", "도로 파손", "안전봉 파손", "보도블록 파손", "가로등 고장", "기타 시설물"] },
+                      description: { type: "STRING" },
+                    },
+                    required: ["category", "description"],
+                  },
+                  maxOutputTokens: 512,
+                },
+              }),
+            });
+          } catch {
+            throw new Error("Gemini에 연결할 수 없습니다. 인터넷 연결을 확인하거나 Vercel 배포 주소에서 다시 시도해 주세요.");
+          }
+          const geminiResult = await geminiResponse.json().catch(() => ({}));
+          if (!geminiResponse.ok) {
+            if (geminiResponse.status === 400 || geminiResponse.status === 403) throw new Error("Gemini API 키 또는 Google AI Studio 사용 설정을 확인해 주세요.");
+            if (geminiResponse.status === 429) throw new Error("Gemini 요청 한도를 초과했습니다. 잠시 후 다시 시도해 주세요.");
+            throw new Error("Gemini 사진 분석에 실패했습니다. API 키와 네트워크를 확인해 주세요.");
+          }
+          const responseText = geminiResult.candidates?.[0]?.content?.parts
+            ?.map(part => typeof part.text === "string" ? part.text : "")
+            .join("")
+            .trim();
+          if (!responseText) throw new Error("Gemini가 분석 결과를 반환하지 않았습니다. 다른 사진으로 다시 시도해 주세요.");
+          try {
+            draft = JSON.parse(responseText);
+          } catch {
+            throw new Error("Gemini 분석 결과 형식이 올바르지 않습니다. 다시 시도해 주세요.");
+          }
+        } else {
+          try {
+            response = await fetch("/api/analyze-photo", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: JSON.stringify({
+                category: document.getElementById("category-input").value,
+                apiKey,
+                photos: photos.map(dataUrl => ({ dataUrl })),
+              }),
+            });
+          } catch {
+            throw new Error("사진 분석 API에 연결할 수 없습니다. Vercel 배포 상태와 api/analyze-photo.js 배포 여부를 확인해 주세요.");
+          }
+          draft = await response.json().catch(() => ({}));
+          if (response.status === 404) throw new Error("Gemini 분석 API를 찾지 못했습니다. api/analyze-photo.js를 포함해 Vercel에 배포해 주세요.");
+          if (!response.ok) throw new Error(draft.error || "사진 분석에 실패했습니다.");
+        }
+        if (!Array.from(document.getElementById("category-input").options).some(option => option.value === draft.category) || typeof draft.description !== "string" || !draft.description.trim()) {
           throw new Error("분석 결과가 올바르지 않습니다. 다시 시도해 주세요.");
         }
-        categoryInput.value = draft.category;
-        document.getElementById("description-input").value = draft.description;
-        const confidence = Math.round(Math.max(0, Math.min(1, Number(draft.confidence) || 0)) * 100);
-        const reviewNote = draft.needsReview || confidence < 55 ? "사진만으로 판단하기 어려운 부분이 있어 내용을 꼭 확인해 주세요." : "AI 초안이므로 제출 전에 내용을 확인해 주세요.";
-        result.innerHTML = `<strong>Gemini 제안 유형: ${escapeHtml(draft.category)}</strong><br>${escapeHtml(draft.description)}<br>${reviewNote} (신뢰도 ${confidence}%)`;
+        document.getElementById("category-input").value = draft.category;
+        document.getElementById("description-input").value = draft.description.trim();
+        result.textContent = `신고 유형: ${draft.category} · 신고 내용 초안을 작성했습니다. 사진과 실제 현장을 확인한 뒤 제출해 주세요.`;
         result.classList.add("ready");
       } catch (error) {
-        result.textContent = error.message || "사진 분석에 실패했습니다. 내용을 직접 입력해 주세요.";
-        showToast(error.message || "사진 분석에 실패했습니다.");
+        result.textContent = error.message || "사진 분석에 실패했습니다. 잠시 후 다시 시도해 주세요.";
       } finally {
         button.disabled = false;
         button.innerHTML = originalLabel;
@@ -878,6 +1051,46 @@
       submitButton.innerHTML = '<i data-lucide="loader-circle"></i>저장 중';
       iconRefresh();
       try {
+        if (DEMO_MODE) {
+          const reportNo = `SP-DEMO-${Date.now().toString(36).toUpperCase()}`;
+          const createdAt = new Date().toISOString();
+          const demoReport = {
+            id: reportNo,
+            type: category,
+            title: `${category} 신고`,
+            area: address.split(/\s+/).slice(-2).join(" "),
+            address,
+            dept: "시연용 · 실제 배부 안 됨",
+            status: "waiting",
+            statusLabel: "시연 접수",
+            time: formatStoredTime(createdAt),
+            icon: ({ "불법현수막": "flag-triangle-right", "도로 파손": "construction", "안전봉 파손": "traffic-cone", "보도블록 파손": "brick-wall", "가로등 고장": "lamp", "기타 시설물": "circle-help" })[category] || "circle-help",
+            tint: category.includes("파손") ? "red" : "amber",
+            description,
+            routingReason: "시연 모드에서는 실제 저장 및 부서 배부가 이루어지지 않습니다.",
+            lat: selectedPoint?.lat ?? null,
+            lng: selectedPoint?.lng ?? null,
+            photoCount: selectedPhotos.length,
+            reporter: "me",
+          };
+          const savedReports = JSON.parse(sessionStorage.getItem(DEMO_REPORTS_KEY) || "[]");
+          if (!Array.isArray(savedReports)) throw new Error("임시 신고 데이터를 읽지 못했습니다. 브라우저 세션을 새로고침해 주세요.");
+          sessionStorage.setItem(DEMO_REPORTS_KEY, JSON.stringify([demoReport, ...savedReports].slice(0, 20)));
+          reports.unshift(demoReport);
+          persistenceState = "demo";
+          updateQueueSubtitle();
+          renderReports();
+          event.target.reset();
+          selectedPhotos = [];
+          selectedPoint = null;
+          document.getElementById("photo-preview").innerHTML = "";
+          document.getElementById("coordinate-label").textContent = "좌표 미확인";
+          updateLocationStatus("현재 위치 버튼을 누르거나 지도에서 위치를 선택하세요.", false);
+          closeModal("report-modal");
+          showToast("시연 신고를 현재 브라우저 세션에만 임시 등록했습니다. 실제 저장·배부는 되지 않았습니다.");
+          return;
+        }
+
         const photos = await Promise.all(selectedPhotos.map(imageFileToDataUrl));
         if (photos.reduce((total, dataUrl) => total + dataUrl.length, 0) > 3_000_000) {
           throw new Error("압축 후 사진 용량이 큽니다. 사진 수를 줄이거나 다시 촬영해 주세요.");
@@ -918,11 +1131,40 @@
       }
     });
 
-    setToday();
-    renderReports();
-    loadSavedReports();
     iconRefresh();
-    loadKakaoMaps();
+    document.getElementById("login-form").addEventListener("submit", event => {
+      event.preventDefault();
+      const email = document.getElementById("login-email").value.trim().toLowerCase();
+      const password = document.getElementById("login-password").value;
+      const geminiApiKey = document.getElementById("login-gemini-key").value.trim();
+      const error = document.getElementById("login-error");
+      if (email !== DEMO_ACCOUNT.email || password !== DEMO_ACCOUNT.password) {
+        error.textContent = "이메일 또는 비밀번호를 확인해 주세요.";
+        document.getElementById("login-password").select();
+        return;
+      }
+
+      try {
+        sessionStorage.setItem(DEMO_SESSION_KEY, DEMO_ACCOUNT.email);
+        if (geminiApiKey) sessionStorage.setItem(GEMINI_SESSION_KEY, geminiApiKey);
+        else sessionStorage.removeItem(GEMINI_SESSION_KEY);
+      } catch {
+        sessionStorage.removeItem(DEMO_SESSION_KEY);
+        sessionStorage.removeItem(GEMINI_SESSION_KEY);
+        error.textContent = "브라우저가 세션 저장을 허용하지 않아 로그인할 수 없습니다.";
+        return;
+      }
+      error.textContent = "";
+      document.getElementById("login-password").value = "";
+      document.getElementById("login-gemini-key").value = "";
+      showWorkspace(DEMO_ACCOUNT.email);
+    });
+
+    try {
+      if (sessionStorage.getItem(DEMO_SESSION_KEY) === DEMO_ACCOUNT.email) showWorkspace(DEMO_ACCOUNT.email);
+    } catch {
+      document.getElementById("login-error").textContent = "브라우저에서 세션 저장 기능을 사용할 수 없습니다.";
+    }
   </script>
 </body>
 </html>
