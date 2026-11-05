@@ -1,4 +1,3 @@
-
 const MAX_PHOTOS = 4;
 const MAX_TOTAL_BASE64_BYTES = 3_000_000;
 const CATEGORIES = [
