@@ -35,10 +35,17 @@ function parsePhoto(dataUrl) {
   return { mimeType: match[1], data: match[2] };
 }
 
-function getErrorMessage(status) {
-  if (status === 429) return "Gemini 요청 한도를 초과했습니다. 잠시 후 다시 시도해 주세요.";
-  if (status === 401 || status === 403) return "Gemini API 키를 확인해 주세요.";
-  return "Gemini 사진 분석에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+function getErrorMessage(status, upstreamMessage = "") {
+  const message = upstreamMessage.toLowerCase();
+  if (status === 400) {
+    if (message.includes("api key") || message.includes("api_key")) return "Gemini API 키 형식이 올바르지 않습니다. Google AI Studio에서 발급한 키인지 확인해 주세요.";
+    return "Gemini가 사진 분석 요청을 거부했습니다. 사진 형식이나 Gemini 모델 설정을 확인해 주세요.";
+  }
+  if (status === 401 || status === 403) return "Gemini API 키가 유효하지 않거나 해당 키에서 Gemini API를 사용할 수 없습니다. 키와 Google AI Studio 설정을 확인해 주세요.";
+  if (status === 404) return "Gemini 모델을 찾을 수 없습니다. Vercel의 GEMINI_MODEL 값을 확인해 주세요.";
+  if (status === 429) return "Gemini 사용 한도 또는 요금 한도를 초과했습니다. Google AI Studio에서 할당량과 결제 설정을 확인해 주세요.";
+  if (status >= 500) return "Gemini 서비스가 일시적으로 응답하지 않습니다. 잠시 후 다시 시도해 주세요.";
+  return "Gemini 사진 분석에 실패했습니다. API 키, 모델 설정, Vercel 배포 로그를 확인해 주세요.";
 }
 
 module.exports = async function handler(req, res) {
@@ -124,7 +131,16 @@ module.exports = async function handler(req, res) {
     return send(res, 502, { error: "Gemini 서비스에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요." });
   }
 
-  if (!upstream.ok) return send(res, upstream.status === 429 ? 429 : 502, { error: getErrorMessage(upstream.status) });
+  if (!upstream.ok) {
+    let upstreamMessage = "";
+    try {
+      const errorResponse = await upstream.json();
+      upstreamMessage = typeof errorResponse?.error?.message === "string" ? errorResponse.error.message : "";
+    } catch {
+      upstreamMessage = "";
+    }
+    return send(res, upstream.status === 429 ? 429 : 502, { error: getErrorMessage(upstream.status, upstreamMessage) });
+  }
 
   let result;
   try {
