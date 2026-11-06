@@ -1004,22 +1004,32 @@
             throw new Error("Gemini 분석 결과 형식이 올바르지 않습니다. 다시 시도해 주세요.");
           }
         } else {
+          const requestId = typeof crypto.randomUUID === "function"
+            ? crypto.randomUUID()
+            : `photo-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
           try {
             response = await fetch("/api/analyze-photo", {
               method: "POST",
               headers: { "Content-Type": "application/json", Accept: "application/json" },
               body: JSON.stringify({
+                requestId,
                 category: document.getElementById("category-input").value,
                 apiKey,
                 photos: photos.map(dataUrl => ({ dataUrl })),
               }),
             });
-          } catch {
-            throw new Error("사진 분석 API에 연결할 수 없습니다. Vercel 배포 상태와 api/analyze-photo.js 배포 여부를 확인해 주세요.");
+          } catch (error) {
+            console.error("Photo analysis API request failed before receiving a response.", {
+              requestId,
+              name: error?.name || "Error",
+              message: error?.message || "Unknown network error",
+              origin: location.origin,
+            });
+            throw new Error(`분석 API에서 응답을 받지 못했습니다. 잠시 후 다시 시도해 주세요. 반복되면 Vercel → Logs에서 요청 시각을 확인해 주세요. 진단 ID: ${requestId}`);
           }
           draft = await response.json().catch(() => ({}));
           if (response.status === 404) throw new Error("Gemini 분석 API를 찾지 못했습니다. api/analyze-photo.js를 포함해 Vercel에 배포해 주세요.");
-          if (!response.ok) throw new Error(draft.error || "사진 분석에 실패했습니다.");
+          if (!response.ok) throw new Error(`${draft.error || "사진 분석에 실패했습니다."}${draft.requestId ? ` (진단 ID: ${draft.requestId})` : ""}`);
         }
         if (!Array.from(document.getElementById("category-input").options).some(option => option.value === draft.category) || typeof draft.description !== "string" || !draft.description.trim()) {
           throw new Error("분석 결과가 올바르지 않습니다. 다시 시도해 주세요.");
