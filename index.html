@@ -560,6 +560,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="./kakao-config.js"></script>
+  <script src="./department-routing.js"></script>
   <script>
     let KAKAO_MAP_APP_KEY = window.SALPISO_CONFIG?.kakaoMapAppKey || "";
     const DEMO_ACCOUNT = Object.freeze({ email: "bhj0429@korea.kr", password: "SalpisoDemo!2026" });
@@ -957,7 +958,7 @@
           ];
           let geminiResponse;
           try {
-            geminiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
+            geminiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent", {
               method: "POST",
               headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
               body: JSON.stringify({
@@ -988,7 +989,7 @@
                 : "Gemini가 분석 요청을 거부했습니다. 사진 형식이나 모델 설정을 확인해 주세요.");
             }
             if (geminiResponse.status === 401 || geminiResponse.status === 403) throw new Error("Gemini API 키가 유효하지 않거나 API 사용이 허용되지 않았습니다. 키와 Google AI Studio 설정을 확인해 주세요.");
-            if (geminiResponse.status === 404) throw new Error("Gemini 모델을 찾을 수 없습니다. 모델 설정을 확인해 주세요.");
+            if (geminiResponse.status === 404) throw new Error("Gemini 모델을 사용할 수 없습니다. Google AI Studio에서 사용 가능한 모델인지 확인해 주세요.");
             if (geminiResponse.status === 429) throw new Error("Gemini 사용 한도 또는 요금 한도를 초과했습니다. Google AI Studio에서 할당량과 결제 설정을 확인해 주세요.");
             throw new Error("Gemini 서비스가 분석 요청에 실패했습니다. 잠시 후 다시 시도해 주세요.");
           }
@@ -1068,6 +1069,7 @@
       const description = document.getElementById("description-input").value.trim();
       if (!selectedPhotos.length) { showToast("현장 사진을 한 장 이상 첨부해 주세요."); document.getElementById("photo-input").focus(); return; }
       if (!address || !category || !description) { showToast("주소, 신고 유형, 신고 내용을 확인해 주세요."); return; }
+      const assignment = window.SalpisoDepartmentRouting.assignDepartment(category, description);
       const submitButton = event.submitter || event.target.querySelector('[type="submit"]');
       const originalLabel = submitButton.innerHTML;
       submitButton.disabled = true;
@@ -1083,14 +1085,14 @@
             title: `${category} 신고`,
             area: address.split(/\s+/).slice(-2).join(" "),
             address,
-            dept: "시연용 · 실제 배부 안 됨",
+            dept: assignment.department,
             status: "waiting",
-            statusLabel: "시연 접수",
+            statusLabel: "배부 대기",
             time: formatStoredTime(createdAt),
             icon: ({ "불법현수막": "flag-triangle-right", "도로 파손": "construction", "안전봉 파손": "traffic-cone", "보도블록 파손": "brick-wall", "가로등 고장": "lamp", "기타 시설물": "circle-help" })[category] || "circle-help",
             tint: category.includes("파손") ? "red" : "amber",
             description,
-            routingReason: "시연 모드에서는 실제 저장 및 부서 배부가 이루어지지 않습니다.",
+            routingReason: assignment.routingReason,
             lat: selectedPoint?.lat ?? null,
             lng: selectedPoint?.lng ?? null,
             photoCount: selectedPhotos.length,
@@ -1110,7 +1112,7 @@
           document.getElementById("coordinate-label").textContent = "좌표 미확인";
           updateLocationStatus("현재 위치 버튼을 누르거나 지도에서 위치를 선택하세요.", false);
           closeModal("report-modal");
-          showToast("시연 신고를 현재 브라우저 세션에만 임시 등록했습니다. 실제 저장·배부는 되지 않았습니다.");
+          showToast(`${assignment.department}에 자동 분류했습니다. 시연 모드라 실제 부서 전송·DB 저장은 되지 않습니다.`);
           return;
         }
 
