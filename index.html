@@ -91,6 +91,7 @@
     .icon-button svg { width: 17px; height: 17px; }
     .notification-dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border: 1.5px solid #fff; border-radius: 50%; background: #c45145; }
     .content { max-width: 1600px; margin: 0 auto; padding: 28px 34px 38px; }
+    .admin-view .content > :not(#admin-dashboard) { display: none; }
     .welcome-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
     .eyebrow { margin-bottom: 6px; color: var(--forest-2); font-size: 10px; font-weight: 700; letter-spacing: .06em; }
     h1 { margin: 0; font-size: 25px; line-height: 1.3; font-weight: 600; letter-spacing: 0; }
@@ -102,6 +103,39 @@
     .report-cta:hover { border-color: #17483d; background: #17483d; }
     .report-cta svg { width: 18px; height: 18px; }
     .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 24px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); }
+    .admin-metrics { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .admin-metric { min-width: 0; border: 0; color: inherit; background: transparent; text-align: left; }
+    .admin-metric .metric-label, .admin-metric .metric-value, .admin-metric .metric-delta { display: block; }
+    button.admin-metric { cursor: pointer; }
+    button.admin-metric:hover { background: #f8fbf9; }
+    button.admin-metric:focus-visible, .admin-recent-row:focus-visible { outline: 2px solid #6c9e8b; outline-offset: -2px; }
+    .admin-data-note { margin: -8px 0 18px; padding: 11px 13px; border: 1px solid #ead8b4; border-radius: 5px; color: #70551e; background: #fff8e9; font-size: 13px; line-height: 1.6; }
+    .admin-data-note.connected { border-color: #cfe2d7; color: #32614f; background: #f1f8f4; }
+    .admin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .admin-panel-content { padding: 15px 17px; }
+    .admin-word-cloud { min-height: 225px; padding: 22px 18px; display: flex; flex-wrap: wrap; align-content: center; align-items: center; justify-content: center; gap: 8px 13px; }
+    .admin-word { padding: 2px 3px; border: 0; border-radius: 4px; background: transparent; font-weight: 700; line-height: 1.35; transition: transform .15s, background .15s; }
+    .admin-word:hover { background: #f0f6f2; transform: translateY(-2px); }
+    .admin-word:focus-visible { outline: 2px solid #6c9e8b; outline-offset: 2px; }
+    .admin-word-count { margin-left: 4px; color: #788582; font-size: 11px; font-weight: 500; vertical-align: 2px; }
+    .admin-word-note { padding: 0 17px 14px; color: var(--muted); font-size: 12px; }
+    .admin-bar-list { display: grid; gap: 14px; }
+    .admin-bar-heading { margin-bottom: 6px; display: flex; justify-content: space-between; gap: 12px; color: #43524e; font-size: 13px; }
+    .admin-bar-heading strong { color: #273632; font-variant-numeric: tabular-nums; }
+    .admin-bar-track { height: 8px; overflow: hidden; border-radius: 6px; background: #edf2ef; }
+    .admin-bar-fill { height: 100%; min-width: 2px; border-radius: inherit; background: #4a8a72; }
+    .admin-bar-fill.blue { background: #5884b6; }
+    .admin-bar-fill.amber { background: #d29a3d; }
+    .admin-empty { padding: 22px 10px; color: var(--muted); text-align: center; font-size: 13px; }
+    .admin-recent-list { padding: 0 16px; }
+    .admin-recent-row { width: 100%; min-height: 67px; padding: 11px 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 0; border-top: 1px solid #edf1ef; color: inherit; background: #fff; text-align: left; }
+    .admin-recent-row:hover { background: #f8fbf9; }
+    .admin-recent-main { min-width: 0; }
+    .admin-recent-title { overflow: hidden; color: #263331; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+    .admin-recent-meta { margin-top: 5px; overflow: hidden; color: #788582; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+    .admin-recent-status { display: grid; justify-items: end; gap: 5px; flex: 0 0 auto; }
+    .admin-urgency { color: #8a611e; font-size: 11px; }
+    .admin-urgency.risk { color: var(--red); font-weight: 600; }
     .metric { min-height: 95px; padding: 17px 20px; display: flex; align-items: center; gap: 13px; }
     .metric + .metric { border-left: 1px solid var(--line); }
     .metric-icon { width: 38px; height: 38px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 7px; color: var(--forest-2); background: var(--mint); }
@@ -288,6 +322,10 @@
       .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .metric:nth-child(3) { border-left: 0; border-top: 1px solid var(--line); }
       .metric:nth-child(4) { border-top: 1px solid var(--line); }
+      .admin-metrics .metric:nth-child(odd) { border-left: 0; }
+      .admin-metrics .metric:nth-child(even) { border-left: 1px solid var(--line); }
+      .admin-metrics .metric:nth-child(n+3) { border-top: 1px solid var(--line); }
+      .admin-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 620px) {
       body { padding-bottom: 61px; }
@@ -331,7 +369,7 @@
       .map-wrap { height: 220px; }
       .lower-grid { margin-top: 14px; }
       .footer-note { font-size: 8px; line-height: 1.6; }
-      .mobile-nav { position: fixed; z-index: 25; inset: auto 0 0; height: 60px; padding: 4px 8px max(4px, env(safe-area-inset-bottom)); display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); background: rgba(255,255,255,.98); }
+      .mobile-nav { position: fixed; z-index: 25; inset: auto 0 0; height: 60px; padding: 4px 8px max(4px, env(safe-area-inset-bottom)); display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line); background: rgba(255,255,255,.98); }
       .mobile-nav button { display: grid; align-content: center; justify-items: center; gap: 3px; border: 0; color: #71807b; background: transparent; font-size: 8px; }
       .mobile-nav button.active { color: var(--forest-2); font-weight: 600; }
       .mobile-nav svg { width: 17px; height: 17px; }
@@ -553,6 +591,7 @@
       </nav>
       <div class="nav-label">현황 및 관리</div>
       <nav class="nav-list">
+        <button class="nav-item" data-view="admin"><i data-lucide="chart-no-axes-combined"></i><span>관리자 대시보드</span></button>
         <button class="nav-item" data-action="map"><i data-lucide="map"></i><span>지도 현황</span></button>
         <button class="nav-item" data-action="guide"><i data-lucide="book-open-text"></i><span>업무 안내</span></button>
       </nav>
@@ -580,6 +619,65 @@
         </div>
       </header>
       <main class="content">
+        <section id="admin-dashboard" hidden aria-labelledby="admin-title">
+          <div class="welcome-row">
+            <div>
+              <div class="eyebrow">DAEGU · ADMIN OVERVIEW</div>
+              <h1 id="admin-title">전체 민원 처리 현황</h1>
+              <p class="welcome-copy">접수된 신고를 상태·유형·담당 부서별로 한눈에 확인합니다.</p>
+            </div>
+            <div class="foot-actions">
+              <button class="secondary-button" id="admin-refresh" type="button"><i data-lucide="refresh-cw"></i>새로고침</button>
+              <button class="primary-button" data-view="department" type="button"><i data-lucide="list-checks"></i>민원 목록</button>
+            </div>
+          </div>
+          <div class="admin-data-note" id="admin-data-note" role="status"></div>
+          <section class="metrics admin-metrics" aria-label="전체 민원 핵심 지표">
+            <button class="metric admin-metric" type="button" data-admin-filter="all">
+              <span class="metric-icon"><i data-lucide="files"></i></span>
+              <span><span class="metric-label">전체 신고</span><span class="metric-value" id="admin-total">0<span class="metric-unit">건</span></span><span class="metric-delta">현재 조회 데이터</span></span>
+            </button>
+            <button class="metric admin-metric" type="button" data-admin-filter="waiting">
+              <span class="metric-icon amber"><i data-lucide="hourglass"></i></span>
+              <span><span class="metric-label">배부 대기</span><span class="metric-value" id="admin-waiting">0<span class="metric-unit">건</span></span><span class="metric-delta">담당 부서 확인 필요</span></span>
+            </button>
+            <button class="metric admin-metric" type="button" data-admin-filter="progress">
+              <span class="metric-icon blue"><i data-lucide="loader-circle"></i></span>
+              <span><span class="metric-label">처리중</span><span class="metric-value" id="admin-progress">0<span class="metric-unit">건</span></span><span class="metric-delta">부서 처리 진행</span></span>
+            </button>
+            <button class="metric admin-metric" type="button" data-admin-filter="done">
+              <span class="metric-icon"><i data-lucide="badge-check"></i></span>
+              <span><span class="metric-label">처리 완료</span><span class="metric-value" id="admin-done">0<span class="metric-unit">건</span></span><span class="metric-delta">완료 처리된 신고</span></span>
+            </button>
+            <div class="metric">
+              <span class="metric-icon red"><i data-lucide="chart-pie"></i></span>
+              <span><span class="metric-label">완료율</span><span class="metric-value" id="admin-completion">0<span class="metric-unit">%</span></span><span class="metric-delta">완료 / 전체 신고</span></span>
+            </div>
+          </section>
+          <div class="admin-grid">
+            <section class="panel" aria-labelledby="admin-status-title">
+              <div class="panel-head"><div><h2 class="panel-title" id="admin-status-title">처리 상태 분포</h2><div class="panel-subtitle">전체 조회 신고의 상태별 건수</div></div></div>
+              <div class="admin-panel-content"><div class="admin-bar-list" id="admin-status-breakdown"></div></div>
+            </section>
+            <section class="panel" aria-labelledby="admin-category-title">
+              <div class="panel-head"><div><h2 class="panel-title" id="admin-category-title">신고 유형별 현황</h2><div class="panel-subtitle">접수 유형 기준</div></div></div>
+              <div class="admin-panel-content"><div class="admin-bar-list" id="admin-category-breakdown"></div></div>
+            </section>
+            <section class="panel" aria-labelledby="admin-department-title">
+              <div class="panel-head"><div><h2 class="panel-title" id="admin-department-title">담당 부서별 업무량</h2><div class="panel-subtitle">자동 분류된 담당 부서 기준</div></div></div>
+              <div class="admin-panel-content"><div class="admin-bar-list" id="admin-department-breakdown"></div></div>
+            </section>
+            <section class="panel" aria-labelledby="admin-keywords-title">
+              <div class="panel-head"><div><h2 class="panel-title" id="admin-keywords-title">신고 키워드 워드클라우드</h2><div class="panel-subtitle" id="admin-keywords-subtitle">신고 내용에서 자주 등장한 단어</div></div></div>
+              <div class="admin-word-cloud" id="admin-word-cloud" aria-label="신고 키워드 워드클라우드"></div>
+              <div class="admin-word-note">공백 단위 단어 빈도 기준이며 신고 1건 내 같은 단어는 한 번만 셉니다. 단어를 선택하면 해당 키워드가 포함된 신고 목록을 확인할 수 있습니다.</div>
+            </section>
+            <section class="panel" aria-labelledby="admin-recent-title">
+              <div class="panel-head"><div><h2 class="panel-title" id="admin-recent-title">최근 접수 민원</h2><div class="panel-subtitle" id="admin-recent-subtitle">최근 신고 내역</div></div><button class="text-button" data-view="department">전체 목록<i data-lucide="arrow-up-right"></i></button></div>
+              <div class="admin-recent-list" id="admin-recent-list"></div>
+            </section>
+          </div>
+        </section>
         <section class="welcome-row">
           <div>
             <div class="eyebrow">DAEGU · FIELD OPERATIONS</div>
@@ -657,6 +755,7 @@
     <button data-action="new-report"><i data-lucide="circle-plus"></i><span>신고 등록</span></button>
     <button data-view="mine"><i data-lucide="clipboard-list"></i><span>나의 신고</span></button>
     <button data-view="department"><i data-lucide="inbox"></i><span>부서 업무함</span></button>
+    <button data-view="admin"><i data-lucide="chart-no-axes-combined"></i><span>관리자</span></button>
   </nav>
 
   <div class="modal-backdrop" id="report-modal" role="presentation" hidden>
@@ -823,6 +922,7 @@
         tint: row.category.includes("파손") ? "red" : "amber",
         description: row.description,
         routingReason: row.routing_reason || "",
+        urgency: row.urgency || "일반",
         lat: row.latitude,
         lng: row.longitude,
         photoCount: Array.isArray(row.photo_paths) ? row.photo_paths.length : 0,
@@ -882,7 +982,7 @@
     function renderReports() {
       const query = document.getElementById("report-search").value.trim().toLowerCase();
       const list = document.getElementById("report-list");
-      let visible = reports.filter(report => (activeFilter === "all" || report.status === activeFilter) && (!query || `${report.title} ${report.type} ${report.area} ${report.address} ${report.dept}`.toLowerCase().includes(query)));
+      let visible = reports.filter(report => (activeFilter === "all" || report.status === activeFilter) && (!query || `${report.title} ${report.type} ${report.description} ${report.area} ${report.address} ${report.dept}`.toLowerCase().includes(query)));
       if (activeView === "mine") visible = visible.filter(report => report.reporter === "me" || report.id === "SP-2026-1048" || report.id === "SP-2026-1043");
       list.innerHTML = visible.length ? visible.map(report => `
         <button class="report-row" data-report-id="${report.id}">
@@ -895,8 +995,124 @@
       list.querySelectorAll("[data-report-id]").forEach(row => row.addEventListener("click", () => openDetail(row.dataset.reportId)));
       iconRefresh();
       updateDashboardMarkers();
+      if (activeView === "admin") renderAdminDashboard();
     }
     function escapeHtml(value) { return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char])); }
+    function renderAdminDashboard() {
+      const total = reports.length;
+      const counts = {
+        waiting: reports.filter(report => report.status === "waiting").length,
+        progress: reports.filter(report => report.status === "progress").length,
+        done: reports.filter(report => report.status === "done").length,
+      };
+      document.getElementById("admin-total").innerHTML = `${total}<span class="metric-unit">건</span>`;
+      document.getElementById("admin-waiting").innerHTML = `${counts.waiting}<span class="metric-unit">건</span>`;
+      document.getElementById("admin-progress").innerHTML = `${counts.progress}<span class="metric-unit">건</span>`;
+      document.getElementById("admin-done").innerHTML = `${counts.done}<span class="metric-unit">건</span>`;
+      document.getElementById("admin-completion").innerHTML = `${total ? Math.round(counts.done / total * 100) : 0}<span class="metric-unit">%</span>`;
+
+      const dataNote = document.getElementById("admin-data-note");
+      dataNote.classList.toggle("connected", persistenceState === "connected");
+      dataNote.textContent = persistenceState === "connected"
+        ? `DB 연결됨 · 현재 조회된 ${total}건 기준입니다. 목록 API가 최근 최대 100건을 반환하므로 전체 기간 통계로 사용하려면 서버 집계·페이지네이션이 필요합니다.`
+        : "시연 데이터 · 현재 브라우저 세션 신고와 예시 신고 기준입니다. 이 화면은 실제 관리자 권한 인증이나 부서별 접근 제어를 제공하지 않습니다.";
+
+      const statusLabels = { waiting: "배부 대기", progress: "처리중", done: "완료" };
+      const statusBreakdown = Object.entries(statusLabels).map(([status, label]) => ({ label, count: counts[status] }));
+      const categoryCounts = new Map();
+      const departmentCounts = new Map();
+      reports.forEach(report => {
+        const category = report.type || "유형 미지정";
+        const department = report.dept || "담당 부서 미지정";
+        categoryCounts.set(category, (categoryCounts.get(category) || 0) + 1);
+        departmentCounts.set(department, (departmentCounts.get(department) || 0) + 1);
+      });
+
+      const renderBars = (targetId, entries, color = "") => {
+        const target = document.getElementById(targetId);
+        if (!entries.length) {
+          target.innerHTML = '<div class="admin-empty">표시할 신고가 없습니다.</div>';
+          return;
+        }
+        const maximum = Math.max(...entries.map(entry => entry.count), 1);
+        target.innerHTML = entries.map(entry => {
+          const width = entry.count ? Math.max(3, Math.round(entry.count / maximum * 100)) : 0;
+          return `<div><div class="admin-bar-heading"><span>${escapeHtml(entry.label)}</span><strong>${entry.count}건</strong></div><div class="admin-bar-track"><div class="admin-bar-fill ${color}" style="width:${width}%"></div></div></div>`;
+        }).join("");
+      };
+      renderBars("admin-status-breakdown", statusBreakdown);
+      renderBars("admin-category-breakdown", [...categoryCounts].map(([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count || a.label.localeCompare(b.label)), "blue");
+      renderBars("admin-department-breakdown", [...departmentCounts].map(([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count || a.label.localeCompare(b.label)), "amber");
+
+      const stopWords = new Set([
+        "신고", "민원", "현장", "내용", "확인", "필요", "있습니다", "합니다", "했습니다",
+        "되었습니다", "입니다", "그리고", "또는", "관련", "주변", "해당", "위해", "통해",
+        "오늘", "현재", "사진", "대구", "주소", "장소", "부분", "것으로", "것이", "경우",
+        "발생", "설치", "상태", "구간", "시야", "통행", "가리", "들떠", "흔들리",
+      ]);
+      const particles = ["에게서", "으로부터", "에서부터", "으로", "에서", "에게", "부터", "까지", "처럼", "보다", "은", "는", "이", "가", "을", "를", "에", "의", "와", "과", "도", "만"];
+      const endings = ["하였습니다", "되었습니다", "했습니다", "있습니다", "하였으며", "되었으며", "되어", "하며", "하고", "하면", "합니다", "입니다", "며"];
+      const keywordCounts = new Map();
+      reports.forEach(report => {
+        const wordsInReport = new Set();
+        const text = `${report.title || ""} ${report.type || ""} ${report.description || ""}`;
+        for (const rawWord of text.match(/[가-힣]{2,}/g) || []) {
+          let word = rawWord;
+          for (const ending of endings) {
+            if (word.length >= ending.length + 2 && word.endsWith(ending)) {
+              word = word.slice(0, -ending.length);
+              break;
+            }
+          }
+          for (const particle of particles) {
+            if (word.length >= particle.length + 2 && word.endsWith(particle)) {
+              word = word.slice(0, -particle.length);
+              break;
+            }
+          }
+          if (word.length >= 2 && !stopWords.has(word)) wordsInReport.add(word);
+        }
+        wordsInReport.forEach(word => keywordCounts.set(word, (keywordCounts.get(word) || 0) + 1));
+      });
+      const topKeywords = [...keywordCounts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 40);
+      const wordCloud = document.getElementById("admin-word-cloud");
+      document.getElementById("admin-keywords-subtitle").textContent = `신고 제목·유형·내용에서 추출 · 상위 ${topKeywords.length}개`;
+      if (!topKeywords.length) {
+        wordCloud.innerHTML = '<div class="admin-empty">분석할 신고 내용이 없습니다.</div>';
+      } else {
+        const maximum = topKeywords[0][1];
+        const minimum = topKeywords[topKeywords.length - 1][1];
+        const colors = ["#17483d", "#396aa6", "#a56a16", "#6a568b", "#287765", "#a14f48"];
+        wordCloud.innerHTML = topKeywords.map(([word, count], index) => {
+          const ratio = maximum === minimum ? 1 : (count - minimum) / (maximum - minimum);
+          const fontSize = Math.round(15 + ratio * 23);
+          return `<button type="button" class="admin-word" data-keyword="${escapeHtml(word)}" title="${escapeHtml(word)} · ${count}건 신고" style="font-size:${fontSize}px;color:${colors[index % colors.length]}">${escapeHtml(word)}<span class="admin-word-count">${count}</span></button>`;
+        }).join("");
+      }
+      wordCloud.querySelectorAll("[data-keyword]").forEach(button => button.addEventListener("click", () => {
+        document.getElementById("report-search").value = button.dataset.keyword;
+        setFilter("all");
+        setView("department");
+      }));
+
+      const urgentCount = reports.filter(report => ["긴급", "안전 위험"].includes(report.urgency)).length;
+      document.getElementById("admin-recent-subtitle").textContent = `최근 신고 · 긴급·안전 위험 ${urgentCount}건`;
+      const recentList = document.getElementById("admin-recent-list");
+      recentList.innerHTML = total ? reports.slice(0, 6).map(report => {
+        const index = reports.indexOf(report);
+        const urgency = report.urgency || "일반";
+        const riskClass = urgency === "안전 위험" ? "risk" : "";
+        return `<button class="admin-recent-row" type="button" data-admin-report-index="${index}">
+          <span class="admin-recent-main"><span class="admin-recent-title">${escapeHtml(report.title)}</span><span class="admin-recent-meta">${escapeHtml(report.id)} · ${escapeHtml(report.area || report.address || "위치 미지정")} · ${escapeHtml(report.time)}</span></span>
+          <span class="admin-recent-status"><span class="status ${statusClass(report.status)}">${escapeHtml(report.statusLabel)}</span><span class="admin-urgency ${riskClass}">${escapeHtml(urgency)}</span></span>
+        </button>`;
+      }).join("") : '<div class="admin-empty">접수된 신고가 없습니다.</div>';
+      recentList.querySelectorAll("[data-admin-report-index]").forEach(button => button.addEventListener("click", () => {
+        const report = reports[Number(button.dataset.adminReportIndex)];
+        if (report) openDetail(report.id);
+      }));
+      iconRefresh();
+    }
     function openDetail(id) {
       const report = reports.find(item => item.id === id);
       if (!report) return;
@@ -922,12 +1138,16 @@
     function setView(view) {
       activeView = view;
       const isMine = view === "mine";
+      const isAdmin = view === "admin";
+      document.getElementById("app-shell").classList.toggle("admin-view", isAdmin);
+      document.getElementById("admin-dashboard").hidden = !isAdmin;
       document.querySelectorAll(".nav-item[data-view], .mobile-nav [data-view]").forEach(button => button.classList.toggle("active", button.dataset.view === view || (view === "department" && button.dataset.view === "department")));
-      document.getElementById("breadcrumb-title").textContent = isMine ? "나의 신고" : view === "department" ? "부서 업무함" : "현황판";
+      document.getElementById("breadcrumb-title").textContent = isAdmin ? "관리자 대시보드" : isMine ? "나의 신고" : view === "department" ? "부서 업무함" : "현황판";
       document.getElementById("queue-title").textContent = isMine ? "나의 현장 신고" : view === "department" ? "부서 업무함" : "최근 현장 신고";
       updateQueueSubtitle();
       renderReports();
-      document.getElementById("queue-title").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      if (isAdmin) window.scrollTo({ top: 0, behavior: "smooth" });
+      else document.getElementById("queue-title").scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
     function openReport() {
       document.getElementById("report-modal").classList.add("open");
@@ -1041,6 +1261,23 @@
     }
     document.querySelectorAll("[data-action='new-report']").forEach(button => button.addEventListener("click", openReport));
     document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => setView(button.dataset.view)));
+    document.querySelectorAll("[data-admin-filter]").forEach(button => button.addEventListener("click", () => {
+      setView("department");
+      setFilter(button.dataset.adminFilter);
+    }));
+    document.getElementById("admin-refresh").addEventListener("click", async event => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      try {
+        await loadSavedReports();
+        showToast(persistenceState === "connected" ? "DB 신고 현황을 새로 불러왔습니다." : "현재 시연 신고 현황을 새로 반영했습니다.");
+      } catch (error) {
+        showToast(error.message || "민원 현황을 새로 불러오지 못했습니다.");
+      } finally {
+        button.disabled = false;
+        if (activeView === "admin") renderAdminDashboard();
+      }
+    });
     document.querySelectorAll("[data-action='map']").forEach(button => button.addEventListener("click", () => {
       document.querySelector(".map-panel").scrollIntoView({ behavior: "smooth", block: "center" });
       showToast(kakaoReady ? "신고 지도를 확인하고 있습니다." : "카카오 앱 키 등록 후 지도 기능을 사용할 수 있습니다.");
@@ -1258,6 +1495,7 @@
             tint: category.includes("파손") ? "red" : "amber",
             description,
             routingReason: assignment.routingReason,
+            urgency: document.getElementById("urgency-input").value,
             lat: selectedPoint?.lat ?? null,
             lng: selectedPoint?.lng ?? null,
             photoCount: selectedPhotos.length,
