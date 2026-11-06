@@ -6,6 +6,7 @@ const MAX_PHOTOS = 4;
 const MAX_TOTAL_BASE64_BYTES = 3_000_000;
 const CATEGORIES = new Set([
   "불법현수막",
+  "불법 쓰레기",
   "도로 파손",
   "안전봉 파손",
   "보도블록 파손",

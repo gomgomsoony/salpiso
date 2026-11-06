@@ -1,8 +1,10 @@
 const MAX_PHOTOS = 4;
 const MAX_TOTAL_BASE64_BYTES = 3_000_000;
+const MAX_UPSTREAM_ATTEMPTS = 3;
 const { randomUUID } = require("node:crypto");
 const CATEGORIES = [
   "불법현수막",
+  "불법 쓰레기",
   "도로 파손",
   "안전봉 파손",
   "보도블록 파손",
@@ -51,6 +53,10 @@ function getErrorMessage(status, upstreamStatus = "", upstreamMessage = "") {
   if (status >= 500) return `Gemini 서비스 오류(${status})입니다. 잠시 후 다시 시도하고, 반복되면 Vercel Functions 로그를 확인해 주세요.`;
   if (upstreamStatus) return `Gemini 요청이 ${upstreamStatus} 오류로 실패했습니다.`;
   return "Gemini 사진 분석에 실패했습니다. API 키, 모델 설정, Vercel 배포 로그를 확인해 주세요.";
+}
+
+function wait(milliseconds) {
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 
 module.exports = async function handler(req, res) {
@@ -111,32 +117,41 @@ module.exports = async function handler(req, res) {
     ...parsedPhotos.map(photo => ({ inlineData: photo })),
   ];
 
-  let upstream;
-  try {
-    upstream = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey,
-      },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: contents }],
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: "OBJECT",
-            properties: {
-              category: { type: "STRING", enum: CATEGORIES },
-              description: { type: "STRING" },
-            },
-            required: ["category", "description"],
+  const upstreamUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
+  const upstreamOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": apiKey,
+    },
+    body: JSON.stringify({
+      contents: [{ role: "user", parts: contents }],
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: "OBJECT",
+          properties: {
+            category: { type: "STRING", enum: CATEGORIES },
+            description: { type: "STRING" },
           },
-          maxOutputTokens: 512,
+          required: ["category", "description"],
         },
-      }),
-    });
-  } catch {
-    return send(res, 502, { error: "Gemini 서비스에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요." });
+        maxOutputTokens: 512,
+      },
+    }),
+  };
+  let upstream;
+  let attempts = 0;
+  for (let attempt = 1; attempt <= MAX_UPSTREAM_ATTEMPTS; attempt += 1) {
+    attempts = attempt;
+    try {
+      upstream = await fetch(upstreamUrl, upstreamOptions);
+    } catch {
+      return send(res, 502, { error: "Gemini 서비스에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요.", requestId });
+    }
+
+    if (upstream.status !== 503 || attempt === MAX_UPSTREAM_ATTEMPTS) break;
+    await wait(attempt * 700);
   }
 
   if (!upstream.ok) {
@@ -155,6 +170,7 @@ module.exports = async function handler(req, res) {
       model,
       status: upstream.status,
       code: upstreamCode || "UNKNOWN",
+      attempts,
     });
     return send(res, upstream.status === 429 ? 429 : 502, {
       error: getErrorMessage(upstream.status, upstreamCode, upstreamMessage),
