@@ -1,5 +1,6 @@
 const MAX_PHOTOS = 4;
 const MAX_TOTAL_BASE64_BYTES = 3_000_000;
+const { randomUUID } = require("node:crypto");
 const CATEGORIES = [
   "불법현수막",
   "도로 파손",
@@ -35,16 +36,20 @@ function parsePhoto(dataUrl) {
   return { mimeType: match[1], data: match[2] };
 }
 
-function getErrorMessage(status, upstreamMessage = "") {
+function getErrorMessage(status, upstreamStatus = "", upstreamMessage = "") {
   const message = upstreamMessage.toLowerCase();
   if (status === 400) {
     if (message.includes("api key") || message.includes("api_key")) return "Gemini API 키 형식이 올바르지 않습니다. Google AI Studio에서 발급한 키인지 확인해 주세요.";
     return "Gemini가 사진 분석 요청을 거부했습니다. 사진 형식이나 Gemini 모델 설정을 확인해 주세요.";
   }
   if (status === 401 || status === 403) return "Gemini API 키가 유효하지 않거나 해당 키에서 Gemini API를 사용할 수 없습니다. 키와 Google AI Studio 설정을 확인해 주세요.";
-  if (status === 404) return "Gemini 모델을 찾을 수 없습니다. Vercel의 GEMINI_MODEL 값을 확인해 주세요.";
+  if (status === 404) return "Gemini 모델을 사용할 수 없습니다. Vercel Settings → Environment Variables에서 GEMINI_MODEL을 gemini-3.6-flash로 설정하거나 기존 값을 삭제해 주세요.";
   if (status === 429) return "Gemini 사용 한도 또는 요금 한도를 초과했습니다. Google AI Studio에서 할당량과 결제 설정을 확인해 주세요.";
-  if (status >= 500) return "Gemini 서비스가 일시적으로 응답하지 않습니다. 잠시 후 다시 시도해 주세요.";
+  if (status === 500) return "Gemini 내부 오류(500)입니다. 다른 사진으로 다시 시도해 주세요. 같은 사진에서 반복되면 Vercel Functions 로그를 확인해 주세요.";
+  if (status === 503) return "Gemini 서비스가 혼잡합니다(503). 잠시 기다린 뒤 다시 시도해 주세요.";
+  if (status === 504) return "Gemini 응답 시간이 초과되었습니다(504). 사진 수를 줄이거나 잠시 후 다시 시도해 주세요.";
+  if (status >= 500) return `Gemini 서비스 오류(${status})입니다. 잠시 후 다시 시도하고, 반복되면 Vercel Functions 로그를 확인해 주세요.`;
+  if (upstreamStatus) return `Gemini 요청이 ${upstreamStatus} 오류로 실패했습니다.`;
   return "Gemini 사진 분석에 실패했습니다. API 키, 모델 설정, Vercel 배포 로그를 확인해 주세요.";
 }
 
@@ -59,6 +64,9 @@ module.exports = async function handler(req, res) {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
     return send(res, 400, { error: "사진 분석 요청을 확인해 주세요." });
   }
+  const requestId = typeof input.requestId === "string" && /^[a-zA-Z0-9_-]{1,80}$/.test(input.requestId)
+    ? input.requestId
+    : randomUUID();
 
   if (input.apiKey !== undefined && (typeof input.apiKey !== "string" || input.apiKey.length > 512)) {
     return send(res, 400, { error: "Gemini API 키 입력을 확인해 주세요." });
@@ -66,7 +74,7 @@ module.exports = async function handler(req, res) {
   const apiKey = (input.apiKey || process.env.GEMINI_API_KEY || "").trim();
   if (!apiKey) return send(res, 503, { error: "로그인 화면에 Gemini API 키를 입력하거나 Vercel GEMINI_API_KEY 환경변수를 설정해 주세요." });
 
-  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const model = process.env.GEMINI_MODEL || "gemini-3.6-flash";
   if (!/^[a-zA-Z0-9._-]{1,100}$/.test(model)) {
     return send(res, 500, { error: "Gemini 모델 설정이 올바르지 않습니다." });
   }
@@ -132,14 +140,27 @@ module.exports = async function handler(req, res) {
   }
 
   if (!upstream.ok) {
+    let upstreamCode = "";
     let upstreamMessage = "";
     try {
       const errorResponse = await upstream.json();
+      upstreamCode = typeof errorResponse?.error?.status === "string" ? errorResponse.error.status : "";
       upstreamMessage = typeof errorResponse?.error?.message === "string" ? errorResponse.error.message : "";
     } catch {
+      upstreamCode = "";
       upstreamMessage = "";
     }
-    return send(res, upstream.status === 429 ? 429 : 502, { error: getErrorMessage(upstream.status, upstreamMessage) });
+    console.error("Gemini photo analysis failed", {
+      requestId,
+      model,
+      status: upstream.status,
+      code: upstreamCode || "UNKNOWN",
+    });
+    return send(res, upstream.status === 429 ? 429 : 502, {
+      error: getErrorMessage(upstream.status, upstreamCode, upstreamMessage),
+      requestId,
+      ...(upstreamCode ? { upstreamCode } : {}),
+    });
   }
 
   let result;
