@@ -1,4 +1,5 @@
 const { randomUUID } = require("node:crypto");
+const { assignDepartment } = require("../department-routing");
 
 const BUCKET = "salpiso-photos";
 const MAX_PHOTOS = 4;
@@ -11,87 +12,6 @@ const CATEGORIES = new Set([
   "가로등 고장",
   "기타 시설물",
 ]);
-const ROUTING_RULES = [
-  {
-    department: "도시디자인과 도시환경개선팀",
-    category: "불법현수막",
-    keywords: ["현수막", "옥외광고물", "불법광고물", "광고물"],
-    duty: "옥외광고물 관리 및 정비",
-  },
-  {
-    department: "교통정보운영과 교통시설팀",
-    keywords: ["신호등", "신호기", "교통표지판", "안전표지판", "교통안전시설", "보조신호기"],
-    duty: "교통신호기 및 교통 관련 안전표지판·안전시설물 설치·보수",
-  },
-  {
-    department: "물환경과 하수시설팀",
-    keywords: ["하수도", "하수관", "하수관로", "배수설비", "배수구", "빗물받이", "우수관", "오수관", "맨홀"],
-    duty: "하수도 및 하수관로 유지·관리",
-  },
-  {
-    department: "도로과 도로정비팀",
-    category: "도로 파손",
-    keywords: ["도로 파손", "포트홀", "싱크홀", "차도 파손", "포장면 파손", "도로 꺼짐", "도로 침하"],
-    duty: "기설도로 유지·관리",
-  },
-  {
-    department: "도로과 도로정비팀",
-    category: "안전봉 파손",
-    keywords: ["안전봉", "시선유도봉", "볼라드", "차량 진입억제용 단주"],
-    duty: "자동차 진입억제용 단주(볼라드) 관련 업무 및 도로 부대시설 유지·관리",
-  },
-  {
-    department: "도로과 도로정비팀",
-    category: "보도블록 파손",
-    keywords: ["보도블록", "보도 파손", "보도 침하", "보도 들뜸", "보행로 포장"],
-    duty: "기설도로 및 도로 부대시설 유지·관리",
-  },
-  {
-    department: "도로과 도로정비팀",
-    category: "가로등 고장",
-    keywords: ["가로등", "도로 조명", "보행등", "점등 불량"],
-    duty: "가로등 설치 및 유지·관리",
-  },
-  {
-    department: "도로과 도로정비팀",
-    keywords: ["도로 부대시설", "도로표지판", "교량", "육교", "지하도", "고가도로"],
-    duty: "도로 부대시설 설치 및 유지·관리",
-  },
-];
-
-function assignDepartment(category, description) {
-  const normalizedDescription = String(description || "").replace(/\s+/g, " ").trim();
-  const candidates = ROUTING_RULES.flatMap(rule => {
-    const matchedKeyword = rule.keywords.find(keyword => normalizedDescription.includes(keyword));
-    const categoryMatches = rule.category === category;
-    if (!matchedKeyword && !categoryMatches) return [];
-    return [{ rule, score: matchedKeyword ? 4 : categoryMatches ? 2 : 0, matchedKeyword }];
-  }).sort((left, right) => right.score - left.score);
-  const descriptionCandidates = candidates.filter(candidate => candidate.matchedKeyword);
-  const rankedCandidates = descriptionCandidates.length ? descriptionCandidates : candidates;
-  const departmentScores = new Map();
-  for (const candidate of rankedCandidates) {
-    departmentScores.set(candidate.rule.department, Math.max(departmentScores.get(candidate.rule.department) || 0, candidate.score));
-  }
-  const highestScore = Math.max(0, ...departmentScores.values());
-  const topDepartments = [...departmentScores].filter(([, score]) => score === highestScore);
-
-  if (topDepartments.length === 1) {
-    const department = topDepartments[0][0];
-    const { rule, matchedKeyword } = rankedCandidates.find(candidate => candidate.rule.department === department && candidate.score === highestScore);
-    const evidence = matchedKeyword ? `신고 내용의 '${matchedKeyword}'` : `신고 유형 '${category}'`;
-    return {
-      department,
-      routingReason: `${evidence}이(가) 분장사무 '${rule.duty}'에 해당합니다.`,
-    };
-  }
-
-  return {
-    department: "소통민원과 민원관리팀",
-    routingReason: "분장사무상 상담민원 접수·배분·관리 담당으로 우선 배부했습니다. 담당 업무를 확인한 뒤 소관 부서로 재배부해 주세요.",
-  };
-}
-
 function send(res, status, body) {
   res.setHeader("Cache-Control", "no-store");
   return res.status(status).json(body);
@@ -280,5 +200,3 @@ module.exports.config = {
     },
   },
 };
-
-module.exports.assignDepartment = assignDepartment;
