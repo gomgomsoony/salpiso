@@ -350,6 +350,153 @@
       .login-screen { padding: 16px; }
       .login-card { padding: 25px 21px; }
     }
+    .login-card { width: min(460px, 100%); padding: 36px; }
+    .login-brand { margin-bottom: 22px; }
+    .login-brand-copy { font-size: 21px; }
+    .login-brand-copy small { font-size: 11px; }
+    .login-banner {
+      position: relative; overflow: hidden; margin: 0 0 25px; padding: 18px 19px;
+      display: flex; align-items: center; gap: 14px; border: 1px solid #cfe5da;
+      border-radius: 12px; color: #fff;
+      background: linear-gradient(120deg, #17483d 0%, #246454 62%, #39866d 100%);
+      box-shadow: 0 8px 20px rgba(23,72,61,.16);
+    }
+    .login-banner::after {
+      content: ""; position: absolute; width: 140px; height: 140px; right: -42px; top: -72px;
+      border: 1px solid rgba(255,255,255,.18); border-radius: 50%;
+      box-shadow: 0 0 0 17px rgba(255,255,255,.06), 0 0 0 35px rgba(255,255,255,.04);
+    }
+    .login-banner-icon {
+      width: 48px; height: 48px; display: grid; place-items: center; flex: 0 0 auto;
+      border: 1px solid rgba(255,255,255,.24); border-radius: 14px;
+      color: #e7fbef; background: rgba(255,255,255,.13);
+    }
+    .login-banner-icon svg { width: 25px; height: 25px; }
+    .login-banner-copy { position: relative; z-index: 1; }
+    .login-banner-title { margin: 0; color: #fff; font-size: 19px; line-height: 1.35; font-weight: 700; letter-spacing: -.03em; }
+    .login-banner-text { margin: 5px 0 0; color: #d7eee3; font-size: 12px; line-height: 1.55; }
+    .login-title { font-size: 24px; }
+    .login-description { margin-bottom: 21px; font-size: 14px; }
+    .login-field { margin-top: 16px; }
+    .login-label { margin-bottom: 7px; font-size: 13px; }
+    .login-input { height: 48px; padding: 0 13px; font-size: 15px; }
+    .login-submit { min-height: 48px; margin-top: 21px; font-size: 15px; }
+    .login-error { min-height: 19px; font-size: 12px; }
+    .login-demo-note { margin-top: 16px; padding: 12px 13px; font-size: 12px; line-height: 1.7; }
+    .brand-caption, .nav-label, .nav-count, .user-dept { font-size: 12px; }
+    .nav-item { min-height: 46px; font-size: 15px; }
+    .help-title, .user-name { font-size: 14px; }
+    .help-copy { font-size: 13px; }
+    .crumb, .date-label { font-size: 13px; }
+    .eyebrow { font-size: 12px; }
+    h1 { font-size: 28px; }
+    .welcome-copy { font-size: 14px; line-height: 1.6; }
+    .primary-button { min-height: 44px; font-size: 14px; }
+    .report-cta { min-height: 48px; font-size: 15px; }
+    .metric-label, .metric-unit { font-size: 13px; }
+    .metric-value { font-size: 26px; }
+    .metric-delta { font-size: 11px; }
+    .panel-title { font-size: 16px; }
+    .panel-subtitle, .map-topline, .map-caption { font-size: 12px; }
+    .text-button, .filter-tab, .search-input, .queue-foot { font-size: 12px; }
+    .queue-head { font-size: 11px; }
+    .report-title { font-size: 14px; }
+    .report-meta, .row-location, .row-dept, .row-location small, .status, .empty-state { font-size: 12px; }
+    .map-fallback-label { font-size: 12px; }
+    .map-key-note, .map-legend, .map-link, .notice-date, .notice-detail, .notice-tag, .workflow-left, .demo-chip { font-size: 11px; }
+    .notice-date strong, .notice-title { font-size: 13px; }
+    .workflow-count { font-size: 16px; }
+    .footer-note { font-size: 11px; line-height: 1.7; }
+    .dialog-title { font-size: 18px; }
+    .dialog-kicker, .required, .draft-note { font-size: 11px; }
+    .form-section-title { font-size: 14px; }
+    .upload-title, .ai-label { font-size: 14px; }
+    .upload-help, .ai-result, .location-status, .coord-line, .privacy-note { font-size: 12px; }
+    .ai-action, .secondary-button, .plain-button, .dialog-foot .primary-button { font-size: 12px; }
+    .field-label { font-size: 13px; }
+    .control { min-height: 42px; font-size: 14px; }
+    .location-map-placeholder::after { font-size: 13px; }
+    .map-hint { font-size: 11px; }
+    .toast { font-size: 13px; line-height: 1.6; }
+    .detail-content h2 { font-size: 21px; }
+    .detail-address, .detail-description, .detail-info { font-size: 13px; }
+    @media (max-width: 620px) {
+      .login-card { padding: 28px 22px; }
+      .login-banner { padding: 15px; gap: 11px; }
+      .login-banner-title { font-size: 17px; }
+      .login-banner-text { font-size: 11px; }
+      .login-banner-icon { width: 42px; height: 42px; border-radius: 12px; }
+      .welcome-row .report-cta { font-size: 12px; }
+      .metric { padding: 12px 9px; gap: 8px; }
+      .metric-label { font-size: 11px; }
+      .metric-value { font-size: 22px; }
+      .metric-delta { font-size: 10px; }
+      .panel-title { font-size: 14px; }
+      .panel-subtitle { font-size: 11px; }
+      .report-meta { font-size: 11px; }
+      .mobile-nav button { font-size: 10px; }
+      .draft-note { max-width: 125px; font-size: 11px; }
+    }
+    .login-banner { padding-right: 12px; }
+    .login-banner-image {
+      position: relative; z-index: 1; width: 76px; height: 76px; margin: -7px 0 -7px auto;
+      flex: 0 0 auto; object-fit: contain; object-position: center bottom;
+    }
+    .login-banner-copy { max-width: 260px; }
+    .app-shell .nav-item { font-size: 16px; }
+    .app-shell .nav-label, .app-shell .nav-count, .app-shell .brand-caption, .app-shell .user-dept { font-size: 13px; }
+    .app-shell .help-title, .app-shell .user-name { font-size: 15px; }
+    .app-shell .help-copy { font-size: 14px; }
+    .app-shell .crumb, .app-shell .date-label, .app-shell .welcome-copy { font-size: 15px; }
+    .app-shell .eyebrow { font-size: 13px; }
+    .app-shell h1 { font-size: 30px; }
+    .app-shell .primary-button { font-size: 15px; }
+    .app-shell .report-cta { font-size: 16px; }
+    .app-shell .metric-label, .app-shell .metric-unit { font-size: 14px; }
+    .app-shell .metric-value { font-size: 28px; }
+    .app-shell .metric-delta { font-size: 12px; }
+    .app-shell .panel-title { font-size: 17px; }
+    .app-shell .panel-subtitle, .app-shell .map-topline, .app-shell .map-caption { font-size: 13px; }
+    .app-shell .text-button, .app-shell .filter-tab, .app-shell .search-input, .app-shell .queue-foot { font-size: 13px; }
+    .app-shell .queue-head { font-size: 12px; }
+    .app-shell .report-title { font-size: 15px; }
+    .app-shell .report-meta, .app-shell .row-location, .app-shell .row-dept,
+    .app-shell .row-location small, .app-shell .status, .app-shell .empty-state { font-size: 13px; }
+    .app-shell .map-fallback-label { font-size: 13px; }
+    .app-shell .map-key-note, .app-shell .map-legend, .app-shell .map-link,
+    .app-shell .notice-date, .app-shell .notice-detail, .app-shell .notice-tag,
+    .app-shell .workflow-left, .app-shell .demo-chip { font-size: 12px; }
+    .app-shell .notice-date strong, .app-shell .notice-title { font-size: 14px; }
+    .app-shell .workflow-count { font-size: 17px; }
+    .app-shell .footer-note { font-size: 12px; }
+    .app-shell .dialog-title { font-size: 19px; }
+    .app-shell .dialog-kicker, .app-shell .required, .app-shell .draft-note { font-size: 12px; }
+    .app-shell .form-section-title { font-size: 15px; }
+    .app-shell .upload-title, .app-shell .ai-label { font-size: 15px; }
+    .app-shell .upload-help, .app-shell .ai-result, .app-shell .location-status,
+    .app-shell .coord-line, .app-shell .privacy-note { font-size: 13px; }
+    .app-shell .ai-action, .app-shell .secondary-button, .app-shell .plain-button,
+    .app-shell .dialog-foot .primary-button { font-size: 13px; }
+    .app-shell .field-label { font-size: 14px; }
+    .app-shell .control { font-size: 15px; }
+    .app-shell .location-map-placeholder::after { font-size: 14px; }
+    .app-shell .map-hint { font-size: 12px; }
+    .app-shell .toast { font-size: 14px; }
+    .app-shell .detail-content h2 { font-size: 22px; }
+    .app-shell .detail-address, .app-shell .detail-description, .app-shell .detail-info { font-size: 14px; }
+    @media (max-width: 620px) {
+      .login-banner-image { width: 62px; height: 62px; margin-right: -5px; }
+      .login-banner-copy { max-width: none; }
+      .app-shell .welcome-copy { font-size: 13px; }
+      .app-shell .welcome-row .report-cta { font-size: 13px; }
+      .app-shell .metric-label { font-size: 12px; }
+      .app-shell .metric-value { font-size: 24px; }
+      .app-shell .metric-delta { font-size: 11px; }
+      .app-shell .panel-title { font-size: 15px; }
+      .app-shell .panel-subtitle, .app-shell .report-meta { font-size: 12px; }
+      .app-shell .mobile-nav button { font-size: 11px; }
+      .app-shell .draft-note { font-size: 12px; }
+    }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
     }
@@ -362,6 +509,14 @@
         <span class="brand-mark"><i data-lucide="scan-eye"></i></span>
         <span class="login-brand-copy">살피소<small>DAEGU FIELD SERVICE</small></span>
       </div>
+      <aside class="login-banner" aria-label="AI 신고 작성 안내">
+        <span class="login-banner-icon" aria-hidden="true"><i data-lucide="sparkles"></i></span>
+        <div class="login-banner-copy">
+          <p class="login-banner-title">AI로 편하게 신고하세요</p>
+          <p class="login-banner-text">사진 한 장으로 신고 유형과 내용 초안을 작성해 드려요.</p>
+        </div>
+        <img class="login-banner-image" src="./emot_026_x3.gif" alt="살피소 캐릭터가 휴대전화로 신고하는 모습">
+      </aside>
       <h1 class="login-title" id="login-title">로그인</h1>
       <p class="login-description">시연 계정과 Gemini API 키를 입력해 현장 업무 화면을 이용하세요.</p>
       <form id="login-form">
@@ -522,7 +677,7 @@
                 <div class="ai-result" id="ai-result" aria-live="polite">사진을 추가한 뒤 분석을 누르면 Gemini가 신고 유형과 내용 초안을 작성합니다.</div>
               </div>
               <div class="field-row">
-                <div class="field"><label class="field-label" for="category-input">신고 유형 <span class="required">필수</span></label><select class="control" id="category-input" required><option value="">유형 선택</option><option>불법현수막</option><option>도로 파손</option><option>안전봉 파손</option><option>보도블록 파손</option><option>가로등 고장</option><option>기타 시설물</option></select></div>
+                <div class="field"><label class="field-label" for="category-input">신고 유형 <span class="required">필수</span></label><select class="control" id="category-input" required><option value="">유형 선택</option><option>불법현수막</option><option>불법 쓰레기</option><option>도로 파손</option><option>안전봉 파손</option><option>보도블록 파손</option><option>가로등 고장</option><option>기타 시설물</option></select></div>
                 <div class="field"><label class="field-label" for="urgency-input">긴급도</label><select class="control" id="urgency-input"><option>일반</option><option>긴급</option><option>안전 위험</option></select></div>
               </div>
               <div class="field"><label class="field-label" for="description-input">신고 내용 <span class="required">필수</span></label><textarea class="control" id="description-input" placeholder="현장에서 확인한 문제와 주변 상황을 입력해 주세요." required></textarea></div>
@@ -560,7 +715,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="./kakao-config.js"></script>
-  <script src="./department-routing.js"></script>
+  <script src="./department-routing.js?v=2"></script>
   <script>
     let KAKAO_MAP_APP_KEY = window.SALPISO_CONFIG?.kakaoMapAppKey || "";
     const DEMO_ACCOUNT = Object.freeze({ email: "bhj0429@korea.kr", password: "SalpisoDemo!2026" });
@@ -652,7 +807,7 @@
       return new Intl.DateTimeFormat("ko-KR", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false }).format(date);
     }
     function mapStoredReport(row) {
-      const icons = { "불법현수막": "flag-triangle-right", "도로 파손": "construction", "안전봉 파손": "traffic-cone", "보도블록 파손": "brick-wall", "가로등 고장": "lamp", "기타 시설물": "circle-help" };
+      const icons = { "불법현수막": "flag-triangle-right", "불법 쓰레기": "trash-2", "도로 파손": "construction", "안전봉 파손": "traffic-cone", "보도블록 파손": "brick-wall", "가로등 고장": "lamp", "기타 시설물": "circle-help" };
       const statusLabels = { waiting: "배부 대기", progress: "처리중", done: "완료" };
       return {
         id: row.report_no,
@@ -944,7 +1099,7 @@
                 "당신은 한국 지방자치단체의 현장 신고 작성을 돕습니다.",
                 "첨부된 사진에서 직접 확인할 수 있는 시설물과 상태만 근거로 신고 초안을 작성하세요.",
                 "사진만으로 불법 여부, 원인, 피해 규모, 위치 또는 안전 위험을 단정하지 말고, 보이지 않는 정보는 만들어내지 마세요.",
-                "category는 다음 중 하나만 선택하세요: 불법현수막, 도로 파손, 안전봉 파손, 보도블록 파손, 가로등 고장, 기타 시설물.",
+                "category는 다음 중 하나만 선택하세요: 불법현수막, 불법 쓰레기, 도로 파손, 안전봉 파손, 보도블록 파손, 가로등 고장, 기타 시설물.",
                 document.getElementById("category-input").value ? `사용자가 선택한 신고 유형은 '${document.getElementById("category-input").value}'입니다. 사진과 명백히 다르지 않으면 유지하세요.` : "",
                 "description은 확인된 상태와 필요한 확인 사항을 한국어 한두 문장으로 작성하세요.",
                 "JSON 형식으로 category와 description만 반환하세요.",
@@ -968,7 +1123,7 @@
                   responseSchema: {
                     type: "OBJECT",
                     properties: {
-                      category: { type: "STRING", enum: ["불법현수막", "도로 파손", "안전봉 파손", "보도블록 파손", "가로등 고장", "기타 시설물"] },
+                      category: { type: "STRING", enum: ["불법현수막", "불법 쓰레기", "도로 파손", "안전봉 파손", "보도블록 파손", "가로등 고장", "기타 시설물"] },
                       description: { type: "STRING" },
                     },
                     required: ["category", "description"],
@@ -1099,7 +1254,7 @@
             status: "waiting",
             statusLabel: "배부 대기",
             time: formatStoredTime(createdAt),
-            icon: ({ "불법현수막": "flag-triangle-right", "도로 파손": "construction", "안전봉 파손": "traffic-cone", "보도블록 파손": "brick-wall", "가로등 고장": "lamp", "기타 시설물": "circle-help" })[category] || "circle-help",
+            icon: ({ "불법현수막": "flag-triangle-right", "불법 쓰레기": "trash-2", "도로 파손": "construction", "안전봉 파손": "traffic-cone", "보도블록 파손": "brick-wall", "가로등 고장": "lamp", "기타 시설물": "circle-help" })[category] || "circle-help",
             tint: category.includes("파손") ? "red" : "amber",
             description,
             routingReason: assignment.routingReason,
